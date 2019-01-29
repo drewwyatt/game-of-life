@@ -1,5 +1,5 @@
 import { range } from 'sanctuary'
-import { Cell, makeCell, SIZE as CELL_SIZE } from './cell'
+import { Cell, makeCell, SIZE as CELL_SIZE, kill, resurrect, CellState } from './cell'
 
 export class Grid {
   static NUMBER_OF_COLUMNS = 5
@@ -12,6 +12,12 @@ export class Grid {
     this.cells = this.makeCells(Grid.NUMBER_OF_CELLS)
   }
 
+  toggle = (idx: number): this => {
+    const cell = this.cells[idx]
+    this.cells[idx] = cell.state === CellState.alive ? kill(cell) : resurrect(cell)
+    return this
+  }
+
   private makeCells = (numberOfCells: number): Cell[] => range(0)(numberOfCells).map(this.mapIndexToCell)
 
   private coordsForIndex = (idx: number) => ({
@@ -21,7 +27,6 @@ export class Grid {
 
   private mapIndexToCell = (idx: number): Cell => {
     const { x, y } = this.coordsForIndex(idx)
-    console.log(`adding cell to position ${x},${y}`)
     return makeCell(x * CELL_SIZE + x, y * CELL_SIZE + y)
   }
 }

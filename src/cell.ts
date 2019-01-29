@@ -1,6 +1,7 @@
 import { Graphics } from 'pixi.js'
 
-const COLOR = 0xffffff
+const DEAD_COLOR = 0xffffff
+const ALIVE_COLOR = 0x000000
 export const SIZE = 20
 
 export enum CellState {
@@ -12,10 +13,33 @@ export type Cell = Graphics & { state: CellState }
 
 export const makeCell = (x: number, y: number): Cell => {
   const cell = new Graphics() as Cell
-  cell.beginFill(COLOR)
+  cell.beginFill(DEAD_COLOR)
   cell.drawRect(x, y, SIZE, SIZE)
   cell.endFill()
   cell.state = CellState.dead
 
+  return cell
+}
+
+export const kill = (cell: Cell): Cell => {
+  console.log('killing:', cell)
+  cell.state = CellState.dead
+  const { x, y } = cell
+  cell.clear()
+  cell.beginFill(DEAD_COLOR)
+  cell.drawRect(x, y, SIZE, SIZE)
+  cell.endFill()
+  console.log(cell)
+  return cell
+}
+
+export const resurrect = (cell: Cell): Cell => {
+  cell.state = CellState.alive
+  const { x, y } = cell
+  cell.clear()
+  cell.beginFill(ALIVE_COLOR)
+  cell.drawRect(x, y, SIZE, SIZE)
+  cell.endFill()
+  console.log(cell)
   return cell
 }
