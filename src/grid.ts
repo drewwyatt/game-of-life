@@ -14,7 +14,7 @@ export class Grid {
 
   toggle = (idx: number): this => {
     const cell = this.cells[idx]
-    this.cells[idx] = cell.state === CellState.alive ? kill(cell) : resurrect(cell)
+    cell.state === CellState.alive ? kill(cell) : resurrect(cell)
     return this
   }
 
