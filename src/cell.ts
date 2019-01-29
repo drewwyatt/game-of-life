@@ -21,10 +21,9 @@ export const makeCell = (x: number, y: number): Cell => {
   return cell
 }
 
-export const kill = (cell: Cell): Cell => {
+export const kill = (cell: Cell, x: number, y: number): Cell => {
   console.log('killing:', cell)
   cell.state = CellState.dead
-  const { x, y } = cell.getGlobalPosition()
   cell.clear()
   cell.beginFill(DEAD_COLOR)
   cell.drawRect(x, y, SIZE, SIZE)
@@ -32,9 +31,8 @@ export const kill = (cell: Cell): Cell => {
   return cell
 }
 
-export const resurrect = (cell: Cell): Cell => {
+export const resurrect = (cell: Cell, x: number, y: number): Cell => {
   cell.state = CellState.alive
-  const { x, y } = cell.getGlobalPosition()
   cell.clear()
   cell.beginFill(ALIVE_COLOR)
   cell.drawRect(x, y, SIZE, SIZE)

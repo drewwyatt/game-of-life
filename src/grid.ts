@@ -14,7 +14,8 @@ export class Grid {
 
   toggle = (idx: number): this => {
     const cell = this.cells[idx]
-    cell.state === CellState.alive ? kill(cell) : resurrect(cell)
+    const { x, y } = this.positionForIndex(idx)
+    cell.state === CellState.alive ? kill(cell, x, y) : resurrect(cell, x, y)
     return this
   }
 
@@ -25,8 +26,16 @@ export class Grid {
     y: Math.floor(idx / Grid.NUMBER_OF_COLUMNS)
   })
 
-  private mapIndexToCell = (idx: number): Cell => {
+  private positionForIndex = (idx: number) => {
     const { x, y } = this.coordsForIndex(idx)
-    return makeCell(x * CELL_SIZE + x, y * CELL_SIZE + y)
+    return {
+      x: x * CELL_SIZE + x,
+      y: y * CELL_SIZE + y
+    }
+  }
+
+  private mapIndexToCell = (idx: number): Cell => {
+    const { x, y } = this.positionForIndex(idx)
+    return makeCell(x, y)
   }
 }
