@@ -1,6 +1,6 @@
 import { Application } from 'pixi.js'
 import { Grid } from './grid'
-import { createRuleset, noUnderpopulatedCells, noOverpopulatedCells } from './rules'
+import { createRuleset, noUnderpopulatedCells, noOverpopulatedCells, allowReproduction } from './rules'
 
 // Add grid to screen
 const app = new Application(0, 0, { backgroundColor: 0x1099bb })
@@ -27,6 +27,6 @@ grid
   .toggle(116)
 
 // Start loop
-setInterval(createRuleset(grid, [noUnderpopulatedCells, noOverpopulatedCells]), 1000)
+app.ticker.add(createRuleset(grid, [noUnderpopulatedCells, noOverpopulatedCells, allowReproduction]))
 
 export default app

@@ -10,7 +10,8 @@ export class Grid {
   static NUMBER_OF_ROWS = Grid.NUMBER_OF_COLUMNS
   static NUMBER_OF_CELLS = Grid.NUMBER_OF_COLUMNS * Grid.NUMBER_OF_ROWS
 
-  static Filters = {
+  static Filters: Record<string, (c: Cell) => boolean> = {
+    isDead: compose(equals(CellState.dead))(prop('state')),
     isLiving: compose(equals(CellState.alive))(prop('state'))
   }
 
@@ -18,6 +19,10 @@ export class Grid {
 
   constructor() {
     this.cells = this.makeCells(Grid.NUMBER_OF_CELLS)
+  }
+
+  get deadCells(): Cell[] {
+    return filter(Grid.Filters.isDead)(this.cells)
   }
 
   get livingCells(): Cell[] {
