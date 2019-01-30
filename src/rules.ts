@@ -1,18 +1,24 @@
+import { Cell } from './cell'
 import { Grid } from './grid'
 
 const apply = <A, B extends (a: A) => any>(a: A) => (b: B) => b(a)
-type Rule = (grid: Grid) => Grid
+
+type Mutation = [Cell[], Cell[]]
+type Rule = (grid: Grid) => Mutation
 
 /**
  * Any live cell with fewer than two live neighbors dies, as if by underpopulation.
  */
-export const noUnderpopulatedCells = (grid: Grid): Grid => {
-  grid.livingCells.filter(cell => grid.getLivingNeighbors(cell.index).length < 2).forEach(c => grid.kill(c.index))
-  return grid
-}
+export const noUnderpopulatedCells: Rule = grid => [
+  grid.livingCells.filter(cell => grid.getLivingNeighbors(cell.index).length < 2),
+  []
+]
 
 export const createRuleset = (grid: Grid, rules: Rule[]) => () => {
-  rules.forEach(apply(grid))
+  rules.map(apply(grid)).forEach(([toKill, toRes]: Mutation) => {
+    toKill.forEach(({ index }) => grid.kill(index))
+    toRes.forEach(({ index }) => grid.resurrect(index))
+  })
 }
 
 // TODO:

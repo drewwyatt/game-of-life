@@ -17,6 +17,6 @@ grid
   .toggle(42)
 
 // Start loop
-setInterval(createRuleset(grid, [noUnderpopulatedCells]), 2000)
+setInterval(createRuleset(grid, [noUnderpopulatedCells]), 1000)
 
 export default app
