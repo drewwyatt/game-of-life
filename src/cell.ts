@@ -1,7 +1,7 @@
 import { Graphics } from 'pixi.js'
 
 const DEAD_COLOR = 0xffffff
-const ALIVE_COLOR = 0x000000
+const ALIVE_COLOR = 0x00ff00
 export const SIZE = 20
 
 export enum CellState {
@@ -22,7 +22,6 @@ export const makeCell = (x: number, y: number): Cell => {
 }
 
 export const kill = (cell: Cell, x: number, y: number): Cell => {
-  console.log('killing:', cell)
   cell.state = CellState.dead
   cell.clear()
   cell.beginFill(DEAD_COLOR)
