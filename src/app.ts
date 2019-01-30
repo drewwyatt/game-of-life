@@ -1,26 +1,22 @@
 import { Application } from 'pixi.js'
 import { Grid } from './grid'
+import { createRuleset, noUnderpopulatedCells } from './rules'
 
+// Add grid to screen
 const app = new Application(0, 0, { backgroundColor: 0x1099bb })
 const grid = new Grid()
 app.stage.addChild(...grid.cells)
 
-// let times = 0
-// let idx = 0
-// app.ticker.add(() => {
-//   if (times < 2) {
-//     grid.toggle(idx)
-//     idx = idx + 1 >= grid.cells.length ? 0 : idx + 1
-//     if (idx === 0) {
-//       times++
-//     }
-//   }
-// })
+// Turn some cells on
+grid
+  .toggle(0)
+  .toggle(2)
+  .toggle(16)
+  .toggle(19)
+  .toggle(34)
+  .toggle(42)
 
-grid.toggle(0)
-grid.toggle(2)
-grid.toggle(16)
-grid.toggle(19)
-grid.toggle(34)
+// Start loop
+setInterval(createRuleset(grid, [noUnderpopulatedCells]), 2000)
 
 export default app

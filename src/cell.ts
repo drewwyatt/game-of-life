@@ -9,13 +9,15 @@ export enum CellState {
   dead
 }
 
-export type Cell = Graphics & { state: CellState }
+export type Cell = Graphics & { index: number; state: CellState }
 
-export const makeCell = (x: number, y: number): Cell => {
+export const makeCell = (x: number, y: number, index: number): Cell => {
   const cell = new Graphics() as Cell
   cell.beginFill(DEAD_COLOR)
   cell.drawRect(x, y, SIZE, SIZE)
   cell.endFill()
+
+  cell.index = index
   cell.state = CellState.dead
 
   return cell

@@ -1,4 +1,4 @@
-import { compose, equals, map, not, range } from 'sanctuary'
+import { compose, equals, filter, map, not, prop, range } from 'sanctuary'
 import { Cell, makeCell, SIZE as CELL_SIZE, kill, resurrect, CellState } from './cell'
 
 const highest = (a: number) => (b: number) => (a > b ? a : b)
@@ -10,10 +10,18 @@ export class Grid {
   static NUMBER_OF_ROWS = Grid.NUMBER_OF_COLUMNS
   static NUMBER_OF_CELLS = Grid.NUMBER_OF_COLUMNS * Grid.NUMBER_OF_ROWS
 
+  static Filters = {
+    isLiving: compose(equals(CellState.alive))(prop('state'))
+  }
+
   cells: Cell[]
 
   constructor() {
     this.cells = this.makeCells(Grid.NUMBER_OF_CELLS)
+  }
+
+  get livingCells(): Cell[] {
+    return filter(Grid.Filters.isLiving)(this.cells)
   }
 
   getNeighbors = (idx: number): Cell[] => {
@@ -21,10 +29,26 @@ export class Grid {
     return this.getNeighboringCoords(x, y).map(({ x, y }) => this.get(x, y))
   }
 
+  getLivingNeighbors = (idx: number): Cell[] => {
+    return this.getNeighbors(idx).filter(Grid.Filters.isLiving)
+  }
+
   toggle = (idx: number): this => {
+    this.cells[idx].state === CellState.alive ? this.kill(idx) : this.resurrect(idx)
+    return this
+  }
+
+  kill = (idx: number): this => {
     const cell = this.cells[idx]
     const { x, y } = this.positionForIndex(idx)
-    cell.state === CellState.alive ? kill(cell, x, y) : resurrect(cell, x, y)
+    kill(cell, x, y)
+    return this
+  }
+
+  resurrect = (idx: number): this => {
+    const cell = this.cells[idx]
+    const { x, y } = this.positionForIndex(idx)
+    resurrect(cell, x, y)
     return this
   }
 
@@ -61,6 +85,6 @@ export class Grid {
 
   private mapIndexToCell = (idx: number): Cell => {
     const { x, y } = this.positionForIndex(idx)
-    return makeCell(x, y)
+    return makeCell(x, y, idx)
   }
 }
