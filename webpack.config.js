@@ -1,35 +1,26 @@
-const path = require('path')
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const outputDir = path.join(__dirname, 'build/');
 
-const package = require('./package.json')
+const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
-  entry: path.resolve(__dirname, 'src'),
-
-  mode: 'development',
-  devtool: 'inline-source-map',
-  devServer: {
-    contentBase: 'dist'
-  },
-
+  entry: './src/Index.bs.js',
+  mode: isProd ? 'production' : 'development',
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist')
+    path: outputDir,
+    filename: 'Index.js'
   },
-
-  resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.json']
-  },
-
-  module: {
-    rules: [{ test: /\.(ts|js)x?$/, loader: 'babel-loader', exclude: /node_modules/ }]
-  },
-
   plugins: [
-    new CleanWebpackPlugin('dist'),
-    new ForkTsCheckerWebpackPlugin(),
-    new HtmlWebpackPlugin({ title: package.name, template: 'src/index.html' })
-  ]
-}
+    new HtmlWebpackPlugin({
+      template: 'src/index.html',
+      inject: false
+    })
+  ],
+  devServer: {
+    compress: true,
+    contentBase: outputDir,
+    port: process.env.PORT || 8000,
+    historyApiFallback: true
+  }
+};
