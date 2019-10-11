@@ -38,8 +38,8 @@ let coordsForIdx = (board, idx) => (idx mod board.width, idx / board.width);
 let neighborsFor = (board, idx) => {
   let (x, y) = board->coordsForIdx(idx);
   open Utils;
-  let xVals = range(highest(0, x - 1), lowest(board.width, x + 1));
-  let yVals = range(highest(0, y - 1), lowest(board.height, y + 1));
+  let xVals = range(highest(0, x - 1), lowest(board.width, x + 2));
+  let yVals = range(highest(0, y - 1), lowest(board.height, y + 2));
   Belt.List.zip(xVals, yVals);
 };
 
