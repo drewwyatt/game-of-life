@@ -21,7 +21,7 @@ let useBoard = (width, height, startingCells) => {
         board.cells
         |> Array.map(Rules.noUnderpopulatedCells(board))
         |> Array.to_list
-        |> List.filter(((s, _)) => s == Board.Alive)
+        |> List.filter(((s, _)) => s == Cell.Alive)
         |> List.map(((_, i)) => i);
 
       setBoard(_ => Board.make(board.width, board.height, cells));
