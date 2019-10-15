@@ -1,6 +1,6 @@
 [@react.component]
 let make = () => {
-  let board = Hooks.useBoard(5, 5, [1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  let board = Hooks.useBoard(5, 5, [5, 6, 7]);
   let cells =
     board.cells
     |> Array.map(Space.props_of_cell(board))
