@@ -9,19 +9,11 @@ let noUnderpopulatedCells = (board: Board.t, (state, idx)) =>
       idx,
     );
   } else {
-    let neighboars = board->Board.neighborsFor(idx);
-    let indexes = neighboars |> List.map(Board.indexForCoords(board));
-    /* Js.log("[" ++ idx->string_of_int ++ "] neighboars:");
-       indexes
-       |> List.fold_left((_, i) => Js.log("  > " ++ i->string_of_int), ()); */
-    let livingIndexes =
-      indexes
-      |> List.filter(i => {
-           let (s, _) = board.cells->Array.get(i);
-           s == Alive;
-         });
-    let ln = livingIndexes |> List.length;
-    ln < 2 ? (Cell.Dead, idx) : (Cell.Alive, idx);
+    board->Board.neighborsFor(idx)
+    |> Array.to_list
+    |> Cell.is_alive->Board.pipe_idx(board)->List.filter
+    |> List.length < 2 ?
+      (Cell.Dead, idx) : (Cell.Alive, idx);
   };
 
 /*

@@ -23,37 +23,35 @@ let make = (width, height, startingIndexes) => {
 
 let coordsForIdx = (board, idx) => (idx mod board.width, idx / board.width);
 
-let neighborsFor = (board, idx) => {
-  let (x, y) = board->coordsForIdx(idx);
-  Js.log("coords for idx: " ++ idx->string_of_int);
-  Js.log("  >  (" ++ x->string_of_int ++ ", " ++ y->string_of_int ++ ")");
-  open Utils;
-  let xVals = range(highest(0, x - 1), lowest(board.width, x + 2));
-  Js.log("xvals:");
-  xVals |> List.fold_left((_, v) => Js.log("  > " ++ v->string_of_int), ());
-  let yVals = range(highest(0, y - 1), lowest(board.height, y + 2));
-  Js.log("yvals:");
-  yVals |> List.fold_left((_, v) => Js.log("  > " ++ v->string_of_int), ());
-  let l =
-    xVals
-    |> List.fold_left(
-         (acc, thisX) => {
-           let pairs =
-             yVals
-             |> List.map(thisY => (thisX, thisY))
-             |> List.filter(pair => pair != (x, y));
-           List.concat([acc, pairs]);
-         },
-         [],
-       );
-  Js.log("pairs:");
-  l
-  |> List.fold_left(
-       (_, (x, y)) =>
-         Js.log("  > " ++ x->string_of_int ++ "," ++ y->string_of_int),
-       (),
-     );
-  l;
+let is_left_border = (board, idx) => idx mod board.width == 0;
+let is_right_border = (board, idx) => idx mod board.width == board.width - 1;
+let is_top_border = (board, idx) => idx < board.width;
+let is_bottom_border = (board, idx) =>
+  idx + board.width >= board.width * board.height;
+
+let make_neighbors_for_axis = (~predicates, ~diff, board, idx) => {
+  let (prev_predicate, next_predicate) = predicates;
+  let prev_idx: option(int) =
+    prev_predicate(board, idx) ? None : Some(idx - diff);
+  let next_idx: option(int) =
+    next_predicate(board, idx) ? None : Some(idx + diff);
+  [|prev_idx, next_idx|]->Belt.Array.keepMap(a => a);
 };
 
-let indexForCoords = (board, (x, y)) => y * board.width + x;
+let x_neighboars_for_board_and_idx =
+  make_neighbors_for_axis(
+    ~predicates=(is_left_border, is_right_border),
+    ~diff=1,
+  );
+let y_neighboars_for_width_board_and_idx =
+  make_neighbors_for_axis(~predicates=(is_top_border, is_bottom_border));
+
+let neighborsFor = (board, idx) =>
+  Array.concat([
+    x_neighboars_for_board_and_idx(board, idx),
+    y_neighboars_for_width_board_and_idx(~diff=board.width, board, idx),
+  ]);
+
+let pipe_idx = (fn, board, idx) => fn(board.cells[idx]);
+
+/* let indexForCoords = (board, (x, y)) => y * board.width + x; */
